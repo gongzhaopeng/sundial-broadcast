@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: broadcast
+  cloud:
+    config:
+      uri: http://sd1.benbenedu.cn:8888

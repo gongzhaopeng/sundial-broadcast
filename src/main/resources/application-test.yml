@@ -1,0 +1,27 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+mongodb:
+  exam-station:
+    uri: 'mongodb://admin:abc123def456@localhost:27017/admin'
+    database: examstation
+  exam-result:
+    uri: 'mongodb://admin:abc123def456@localhost:27017/admin'
+    database: examresult
+
+custom:
+  credit-ease:
+    products:
+      - code: XXZHSZ
+        echain-title: '宜信V3_小学综合素质考试链'
+      - code: QSNHXSZ
+        echain-title: '宜信V3_青少年核心素质考试链'
+      - code: XueKeXQ
+        exam-title: '宜信V3_学科兴趣和学科潜力考试'
+      - code: ZhuanYeXQ
+        echain-title: '志愿填报小程序考试链2020'
+        assess-code-tag: 'CreditEase'
+    sign-key: '7be47baf24d901787b6148d23661f7745e2ae156d00b2cab111913dd4ffe9ce1'
+    account-name: 'dev.frontend.it@benbenedu.cn'
+    account-password: 'dev.frontend.it@benbenedu.cn'
