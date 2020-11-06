@@ -75,7 +75,7 @@ public class CreditEaseController {
         return doLogin();
     }
 
-    @PostMapping("/login/assess-code/signing")
+    @PostMapping("/assess-code/signing")
     public String signAssessCode(@RequestBody @Valid AssessCodeSigningReq req) {
 
         final var params = Map.<String, Object>of(
