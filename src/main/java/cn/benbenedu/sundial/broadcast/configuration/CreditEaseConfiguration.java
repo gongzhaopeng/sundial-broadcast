@@ -14,6 +14,8 @@ public class CreditEaseConfiguration {
 
     private List<Product> products;
     private String signKey;
+    private String clientId;
+    private String clientSecret;
     private String accountName;
     private String accountPassword;
 

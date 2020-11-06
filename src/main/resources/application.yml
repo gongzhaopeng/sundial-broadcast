@@ -4,10 +4,10 @@ spring:
 
 mongodb:
   exam-station:
-    uri: 'mongodb://admin:abc123def456@localhost:27017/admin'
+    uri: 'mongodb://localhost:27017'
     database: examstation
   exam-result:
-    uri: 'mongodb://admin:abc123def456@localhost:27017/admin'
+    uri: 'mongodb://localhost:27017'
     database: examresult
 
 custom:
@@ -15,13 +15,15 @@ custom:
     products:
       - code: XXZHSZ
         echain-title: '宜信V3_小学综合素质考试链'
-      - code: QSNHXSZ
-        echain-title: '宜信V3_青少年核心素质考试链'
+#      - code: QSNHXSZ
+#        echain-title: '宜信V3_青少年核心素质考试链'
       - code: XueKeXQ
         exam-title: '宜信V3_学科兴趣和学科潜力考试'
       - code: ZhuanYeXQ
         echain-title: '志愿填报小程序考试链2020'
         assess-code-tag: 'CreditEase'
     sign-key: '7be47baf24d901787b6148d23661f7745e2ae156d00b2cab111913dd4ffe9ce1'
+    client-id: '5f6b12669d337636ebc0ad05'
+    client-secret: 'cRF6Lvp5Tk7g6hl3VCeXYN8YvHWZ9dk67Oz25ygIFg1umJP1b2nI2ZMvCWHXA6h9'
     account-name: 'dev.frontend.it@benbenedu.cn'
     account-password: 'dev.frontend.it@benbenedu.cn'

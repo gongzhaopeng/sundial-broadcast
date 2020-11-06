@@ -9,4 +9,7 @@ public interface AuxiliaryTokenRepository extends MongoRepository<AuxiliaryToken
 
     Optional<AuxiliaryToken> findByCodeAndTargetTypeAndTargetId(
             String code, String targetType, String targetId);
+
+    Boolean existsByCodeAndTargetTypeAndTargetId(
+            String code, String targetType, String targetId);
 }

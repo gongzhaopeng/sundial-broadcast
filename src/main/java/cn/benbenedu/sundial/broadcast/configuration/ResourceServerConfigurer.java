@@ -66,6 +66,9 @@ public class ResourceServerConfigurer
                 "/csrf/**").permitAll();
 
         http.authorizeRequests()
+                .antMatchers("/genesis/credit-ease/**").permitAll();
+
+        http.authorizeRequests()
                 .anyRequest().authenticated();
     }
 
