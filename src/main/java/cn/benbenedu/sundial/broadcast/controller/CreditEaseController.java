@@ -75,6 +75,16 @@ public class CreditEaseController {
         return doLogin();
     }
 
+    @PostMapping("/login/assess-code/signing")
+    public String signAssessCode(@RequestBody @Valid AssessCodeSigningReq req) {
+
+        final var params = Map.<String, Object>of(
+                "productId", req.getProductId(),
+                "assessCode", req.getAssessCode());
+
+        return creditEaseService.sign(params, req.getTimestamp());
+    }
+
     private LoginResp doLogin() {
 
         final var ret = loginService.acquireAccessToken(
@@ -119,5 +129,18 @@ public class CreditEaseController {
         @NotNull
         @JsonProperty("access_token")
         private String accessToken;
+    }
+
+    @Data
+    static class AssessCodeSigningReq {
+
+        @NotNull
+        private CreditEaseProductCode productId;
+
+        @NotNull
+        private String assessCode;
+
+        @NotNull
+        private Long timestamp;
     }
 }
