@@ -5,13 +5,11 @@ import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
 import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
 import cn.benbenedu.sundial.broadcast.model.ExamAticket;
-import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseNotifyPhase;
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResultNotification;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProduct;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
 import cn.benbenedu.sundial.broadcast.repository.accountcenter.AccountRepository;
-import cn.benbenedu.sundial.broadcast.repository.examstation.AuxiliaryTokenRepository;
-import cn.benbenedu.sundial.broadcast.repository.examstation.ExamChainRepository;
-import cn.benbenedu.sundial.broadcast.repository.examstation.ExamRepository;
+import cn.benbenedu.sundial.broadcast.repository.examstation.*;
 import lombok.Getter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,6 +28,8 @@ public class CreditEaseService implements InitializingBean {
     private final ExamRepository examRepository;
     private final ExamChainRepository examChainRepository;
     private final AuxiliaryTokenRepository auxiliaryTokenRepository;
+    private final EchainAticketRepository echainAticketRepository;
+    private final AnswerSheetRepository answerSheetRepository;
 
     private Map<CreditEaseProductCode, CreditEaseProduct> codeToProduct;
     private Map<String, CreditEaseProduct> examIdToProduct;
@@ -42,13 +42,17 @@ public class CreditEaseService implements InitializingBean {
             final AccountRepository accountRepository,
             final ExamRepository examRepository,
             final ExamChainRepository examChainRepository,
-            final AuxiliaryTokenRepository auxiliaryTokenRepository) {
+            final AuxiliaryTokenRepository auxiliaryTokenRepository,
+            final EchainAticketRepository echainAticketRepository,
+            final AnswerSheetRepository answerSheetRepository) {
 
         this.creditEaseConfiguration = creditEaseConfiguration;
         this.accountRepository = accountRepository;
         this.examRepository = examRepository;
         this.examChainRepository = examChainRepository;
         this.auxiliaryTokenRepository = auxiliaryTokenRepository;
+        this.echainAticketRepository = echainAticketRepository;
+        this.answerSheetRepository = answerSheetRepository;
     }
 
     @Override
@@ -136,17 +140,25 @@ public class CreditEaseService implements InitializingBean {
 
         final var examId = examAticket.getExam().getId();
         Optional.ofNullable(examIdToProduct.get(examId)).ifPresent(product -> {
-            if (product.getNotifyPhase() != CreditEaseNotifyPhase.ReportGenerated) {
+            if (product.getCode() != CreditEaseProductCode.QSNHXSZ) {
                 return;
             }
 
-            Optional.ofNullable(product.getEchainId()).map(echainId -> {
-                // TODO
-                return null;
-            }).or(() -> {
-                // TODO
-                return null;
-            });
+            final var echainAticket =
+                    echainAticketRepository.findById(examAticket.getEchainAticket()).orElseThrow();
+            if (echainAticket.getAssessToken() == null) {
+                return;
+            }
+
+            final var answerSheet =
+                    answerSheetRepository.findById(examAticket.getId()).orElseThrow();
+
+            final var notification = new CreditEaseAssessResultNotification();
+            notification.setProductId(product.getCode().toString());
+            notification.setAssessTime(answerSheet.getEndTime().toString());
+            notification.setAssessCode(echainAticket.getAssessToken());
+            notification.setAssessResultUrl(
+                    personalReportGeneratedEvent.getUrls().values().stream().findFirst().get());
 
             // TODO
         });
