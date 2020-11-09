@@ -25,5 +25,7 @@ public class CreditEaseConfiguration {
         private CreditEaseProductCode code;
         private String echainTitle;
         private String examTitle;
+        private String assessCodeTag;
+        private String notifyPhase;
     }
 }
