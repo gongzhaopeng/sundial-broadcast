@@ -32,6 +32,12 @@ public class MongoConfiguration {
         return new MongoTemplate(examResultFactory(this.mongoProperties.getExamResult()));
     }
 
+    @Bean(name = "accountCenterMongoTemplate")
+    public MongoTemplate accountCenterMongoTemplate() throws Exception {
+
+        return new MongoTemplate(accountCenterFactory(this.mongoProperties.getAccountCenter()));
+    }
+
     @Bean
     @Primary
     public MongoDbFactory examStationFactory(final MongoProperties mongo) throws Exception {
@@ -40,6 +46,11 @@ public class MongoConfiguration {
 
     @Bean
     public MongoDbFactory examResultFactory(final MongoProperties mongo) throws Exception {
+        return new SimpleMongoDbFactory(new MongoClient(new MongoClientURI(mongo.getUri())), mongo.getDatabase());
+    }
+
+    @Bean
+    public MongoDbFactory accountCenterFactory(final MongoProperties mongo) throws Exception {
         return new SimpleMongoDbFactory(new MongoClient(new MongoClientURI(mongo.getUri())), mongo.getDatabase());
     }
 }

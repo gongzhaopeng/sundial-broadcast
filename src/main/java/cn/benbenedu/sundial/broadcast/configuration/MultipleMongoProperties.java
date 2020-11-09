@@ -10,4 +10,5 @@ public class MultipleMongoProperties {
 
     private MongoProperties examStation;
     private MongoProperties examResult;
+    private MongoProperties accountCenter;
 }

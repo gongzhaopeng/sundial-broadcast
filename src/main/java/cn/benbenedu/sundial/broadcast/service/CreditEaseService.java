@@ -1,12 +1,17 @@
 package cn.benbenedu.sundial.broadcast.service;
 
 import cn.benbenedu.sundial.broadcast.configuration.CreditEaseConfiguration;
+import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
+import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
+import cn.benbenedu.sundial.broadcast.model.ExamAticket;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProduct;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
+import cn.benbenedu.sundial.broadcast.repository.accountcenter.AccountRepository;
 import cn.benbenedu.sundial.broadcast.repository.examstation.AuxiliaryTokenRepository;
 import cn.benbenedu.sundial.broadcast.repository.examstation.ExamChainRepository;
 import cn.benbenedu.sundial.broadcast.repository.examstation.ExamRepository;
+import lombok.Getter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -20,6 +25,7 @@ public class CreditEaseService implements InitializingBean {
 
     private final CreditEaseConfiguration creditEaseConfiguration;
 
+    private final AccountRepository accountRepository;
     private final ExamRepository examRepository;
     private final ExamChainRepository examChainRepository;
     private final AuxiliaryTokenRepository auxiliaryTokenRepository;
@@ -27,13 +33,18 @@ public class CreditEaseService implements InitializingBean {
     private Map<CreditEaseProductCode, CreditEaseProduct> codeToProduct;
     private Map<String, CreditEaseProduct> examIdToProduct;
 
+    @Getter
+    private Account account;
+
     public CreditEaseService(
             final CreditEaseConfiguration creditEaseConfiguration,
+            final AccountRepository accountRepository,
             final ExamRepository examRepository,
             final ExamChainRepository examChainRepository,
             final AuxiliaryTokenRepository auxiliaryTokenRepository) {
 
         this.creditEaseConfiguration = creditEaseConfiguration;
+        this.accountRepository = accountRepository;
         this.examRepository = examRepository;
         this.examChainRepository = examChainRepository;
         this.auxiliaryTokenRepository = auxiliaryTokenRepository;
@@ -41,6 +52,8 @@ public class CreditEaseService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+
+        account = accountRepository.findByEmail(creditEaseConfiguration.getAccountName()).orElseThrow();
 
         codeToProduct = new HashMap<>();
         examIdToProduct = new HashMap<>();
@@ -112,5 +125,21 @@ public class CreditEaseService implements InitializingBean {
         }
         String ret = DigestUtils.sha256Hex(sb.toString()).substring(40);
         return ret;
+    }
+
+    public void notifyExamReportGenerated(
+            final PersonalReportGeneratedEvent personalReportGeneratedEvent,
+            final ExamAticket examAticket) {
+
+        final var examId = examAticket.getExam().getId();
+        Optional.ofNullable(examIdToProduct.get(examId)).ifPresent(product -> {
+            if (product.getCode() == CreditEaseProductCode.QSNHXSZ) {
+
+                // TODO
+            } else if (product.getCode() == CreditEaseProductCode.XueKeXQ) {
+
+                // TODO
+            }
+        });
     }
 }

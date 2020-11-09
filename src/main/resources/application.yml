@@ -35,6 +35,9 @@ mongodb:
   exam-result:
     uri: 'mongodb://localhost:27017'
     database: examresult
+  account-center:
+    uri: 'mongodb://localhost:27017'
+    database: accountcenter
 
 custom:
   credit-ease:

@@ -89,7 +89,7 @@ public class CreditEaseController {
 
         final var ret = loginService.acquireAccessToken(
                 creditEaseConfiguration.getClientId(), creditEaseConfiguration.getClientSecret(),
-                creditEaseConfiguration.getAccountName(), creditEaseConfiguration.getAccountPassword());
+                creditEaseService.getAccount().getId(), creditEaseConfiguration.getAccountPassword());
 
         final var resp = new LoginResp();
         resp.setAccessToken(ret.getAccessToken());

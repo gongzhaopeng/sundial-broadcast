@@ -3,3 +3,6 @@ mongodb:
     uri: 'mongodb://localhost:27017'
   exam-result:
     uri: 'mongodb://localhost:27017'
+  account-center:
+    uri: 'mongodb://localhost:27017'
+    database: accountcenter
