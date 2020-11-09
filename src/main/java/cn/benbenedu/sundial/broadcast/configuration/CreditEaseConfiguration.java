@@ -1,5 +1,6 @@
 package cn.benbenedu.sundial.broadcast.configuration;
 
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseNotifyPhase;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -26,6 +27,6 @@ public class CreditEaseConfiguration {
         private String echainTitle;
         private String examTitle;
         private String assessCodeTag;
-        private String notifyPhase;
+        private CreditEaseNotifyPhase notifyPhase;
     }
 }

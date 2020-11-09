@@ -5,6 +5,7 @@ import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
 import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
 import cn.benbenedu.sundial.broadcast.model.ExamAticket;
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseNotifyPhase;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProduct;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
 import cn.benbenedu.sundial.broadcast.repository.accountcenter.AccountRepository;
@@ -64,6 +65,8 @@ public class CreditEaseService implements InitializingBean {
 
                     final var product = new CreditEaseProduct();
                     product.setCode(code);
+                    product.setAssessCodeTag(productConfig.getAssessCodeTag());
+                    product.setNotifyPhase(productConfig.getNotifyPhase());
 
                     Optional.ofNullable(productConfig.getEchainTitle()).ifPresentOrElse(
                             echainTitle -> {
@@ -133,13 +136,21 @@ public class CreditEaseService implements InitializingBean {
 
         final var examId = examAticket.getExam().getId();
         Optional.ofNullable(examIdToProduct.get(examId)).ifPresent(product -> {
-            if (product.getCode() == CreditEaseProductCode.QSNHXSZ) {
-
-                // TODO
-            } else if (product.getCode() == CreditEaseProductCode.XueKeXQ) {
-
-                // TODO
+            if (product.getNotifyPhase() != CreditEaseNotifyPhase.ReportGenerated) {
+                return;
             }
+
+            Optional.ofNullable(product.getEchainId()).map(echainId -> {
+                // TODO
+                return null;
+            }).or(() -> {
+                // TODO
+                return null;
+            });
+
+            // TODO
         });
     }
+
+    // TODO
 }

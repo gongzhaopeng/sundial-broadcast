@@ -12,4 +12,7 @@ public class CreditEaseProduct {
 
     private String examId;
     private String examTitle;
+
+    private String assessCodeTag;
+    private CreditEaseNotifyPhase notifyPhase;
 }
