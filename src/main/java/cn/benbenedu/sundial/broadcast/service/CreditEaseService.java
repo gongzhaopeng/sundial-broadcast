@@ -211,12 +211,22 @@ public class CreditEaseService implements InitializingBean {
         }
 
         final var echainAticket = optEchainAticket.get();
-        String examAticketId;
+        String examAticketId = null;
         if (echainAticket.getExamTickets() != null &&
-                !echainAticket.getExamTickets().isEmpty() && !echainAticket.getExamTickets().get(0).isEmpty()) {
-            final var examAtickets = echainAticket.getExamTickets().get(0);
-            examAticketId = examAtickets.get(examAtickets.size() - 1);
-        } else {
+                !echainAticket.getExamTickets().isEmpty()) {
+            if (echainAticket.getExamTickets().get(0) != null &&
+                    !echainAticket.getExamTickets().get(0).isEmpty()) {
+                final var examAtickets = echainAticket.getExamTickets().get(0);
+                examAticketId = examAtickets.get(examAtickets.size() - 1);
+            } else if (echainAticket.getExamTickets().size() > 1 &&
+                    echainAticket.getExamTickets().get(1) != null &&
+                    !echainAticket.getExamTickets().get(1).isEmpty()) {
+                final var examAtickets = echainAticket.getExamTickets().get(1);
+                examAticketId = examAtickets.get(examAtickets.size() - 1);
+            }
+
+        }
+        if (examAticketId == null) {
             return assessResult;
         }
 
