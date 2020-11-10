@@ -1,0 +1,15 @@
+mongodb:
+  exam-station:
+    uri: 'mongodb://localhost:27017'
+  exam-result:
+    uri: 'mongodb://localhost:27017'
+  account-center:
+    uri: 'mongodb://localhost:27017'
+
+custom:
+  credit-ease:
+    sign-key: '7be47baf24d901787b6148d23661f7745e2ae156d00b2cab111913dd4ffe9ce1'
+    client-id: '5f3a1d4babebfe757b27bdcf'
+    client-secret: 'crvtEXG1mDac4fajyfoWMow57Lq2O8NTrL6mHSjk9iP7MDPnhCebCOJ2PDPuZfXB'
+    account-name: 'production.creditease@creditease.com'
+    account-password: 'qSyPVNzl80BsKxoCR3XYZbMLt9j71Efr'
