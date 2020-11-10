@@ -2,13 +2,20 @@ package cn.benbenedu.sundial.broadcast.model.creditease;
 
 import lombok.Data;
 
-@Data
-public class CreditEaseAssessResultNotification {
+import javax.validation.constraints.NotNull;
 
+@Data
+public class CreditEaseAssessResultReq {
+
+    @NotNull
     private CreditEaseProductCode productId;
-    private String assessTime;
+
+    @NotNull
     private String assessCode;
-    private String assessResultUrl;
+
+    @NotNull
     private String token;
+
+    @NotNull
     private String timestamp;
 }

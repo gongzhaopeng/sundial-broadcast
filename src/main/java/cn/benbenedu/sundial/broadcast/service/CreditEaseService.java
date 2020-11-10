@@ -5,12 +5,12 @@ import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
 import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
 import cn.benbenedu.sundial.broadcast.model.ExamAticket;
-import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResultNotification;
-import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProduct;
-import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
+import cn.benbenedu.sundial.broadcast.model.creditease.*;
 import cn.benbenedu.sundial.broadcast.repository.accountcenter.AccountRepository;
+import cn.benbenedu.sundial.broadcast.repository.examresult.ExamPersonalReportRepository;
 import cn.benbenedu.sundial.broadcast.repository.examstation.*;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CreditEaseService implements InitializingBean {
 
     private final CreditEaseConfiguration creditEaseConfiguration;
@@ -30,6 +31,7 @@ public class CreditEaseService implements InitializingBean {
     private final AuxiliaryTokenRepository auxiliaryTokenRepository;
     private final EchainAticketRepository echainAticketRepository;
     private final AnswerSheetRepository answerSheetRepository;
+    private final ExamPersonalReportRepository examPersonalReportRepository;
 
     private Map<CreditEaseProductCode, CreditEaseProduct> codeToProduct;
     private Map<String, CreditEaseProduct> examIdToProduct;
@@ -44,7 +46,8 @@ public class CreditEaseService implements InitializingBean {
             final ExamChainRepository examChainRepository,
             final AuxiliaryTokenRepository auxiliaryTokenRepository,
             final EchainAticketRepository echainAticketRepository,
-            final AnswerSheetRepository answerSheetRepository) {
+            final AnswerSheetRepository answerSheetRepository,
+            final ExamPersonalReportRepository examPersonalReportRepository) {
 
         this.creditEaseConfiguration = creditEaseConfiguration;
         this.accountRepository = accountRepository;
@@ -53,6 +56,7 @@ public class CreditEaseService implements InitializingBean {
         this.auxiliaryTokenRepository = auxiliaryTokenRepository;
         this.echainAticketRepository = echainAticketRepository;
         this.answerSheetRepository = answerSheetRepository;
+        this.examPersonalReportRepository = examPersonalReportRepository;
     }
 
     @Override
@@ -154,15 +158,95 @@ public class CreditEaseService implements InitializingBean {
                     answerSheetRepository.findById(examAticket.getId()).orElseThrow();
 
             final var notification = new CreditEaseAssessResultNotification();
-            notification.setProductId(product.getCode().toString());
+            notification.setProductId(product.getCode());
             notification.setAssessTime(answerSheet.getEndTime().toString());
             notification.setAssessCode(echainAticket.getAssessToken());
             notification.setAssessResultUrl(
                     personalReportGeneratedEvent.getUrls().values().stream().findFirst().get());
 
+            final var timestamp = System.currentTimeMillis();
+            final var params = Map.<String, Object>of(
+                    "productId", notification.getProductId(),
+                    "assessTime", notification.getAssessTime(),
+                    "assessCode", notification.getAssessCode(),
+                    "assessResultUrl", notification.getAssessResultUrl());
+            final var token = sign(params, timestamp);
+            notification.setTimestamp(String.valueOf(timestamp));
+            notification.setToken(token);
+
+            log.info("CreditEase notification prepared: {}", notification);
+
             // TODO
         });
     }
 
-    // TODO
+    public CreditEaseAssessResult getAssessResult(
+            final CreditEaseAssessResultReq assessResultReq) {
+
+        final var assessResult = new CreditEaseAssessResult();
+        assessResult.setRespCode("0003");
+        assessResult.setRespMessage("No result");
+
+        final var params = Map.<String, Object>of(
+                "productId", assessResultReq.getProductId(),
+                "assessCode", assessResultReq.getAssessCode());
+        if (!verifySign(params, Long.parseLong(assessResultReq.getTimestamp()), assessResultReq.getToken())) {
+            assessResult.setRespCode("0001");
+            assessResult.setRespMessage("Invalid token");
+            return assessResult;
+        }
+
+        if (assessResultReq.getProductId() != CreditEaseProductCode.QSNHXSZ) {
+            assessResult.setRespCode("0002");
+            assessResult.setRespMessage("Invalid productId");
+            return assessResult;
+        }
+
+        final var product = codeToProduct.get(assessResultReq.getProductId());
+        final var assessCode = assessResultReq.getAssessCode();
+        final var optEchainAticket =
+                echainAticketRepository.findByAssessTokenAndEchainId(assessCode, product.getEchainId());
+        if (optEchainAticket.isEmpty()) {
+            return assessResult;
+        }
+
+        final var echainAticket = optEchainAticket.get();
+        String examAticketId = null;
+        if (echainAticket.getExamTickets() != null &&
+                !echainAticket.getExamTickets().isEmpty() && !echainAticket.getExamTickets().get(0).isEmpty()) {
+            final var examAtickets = echainAticket.getExamTickets().get(0);
+            examAticketId = examAtickets.get(examAtickets.size() - 1);
+        } else {
+            return assessResult;
+        }
+
+        final var optExamPersonalReport = examPersonalReportRepository.findById(examAticketId);
+        if (optExamPersonalReport.isEmpty()) {
+            return assessResult;
+        }
+        final var examPersonalReport = optExamPersonalReport.get();
+        String reportUrl = null;
+        if (examPersonalReport.getFiles() != null &&
+                !examPersonalReport.getFiles().isEmpty()) {
+            reportUrl = examPersonalReport.getFiles().get(0).getUrl();
+        }
+        if (reportUrl == null) {
+            return assessResult;
+        }
+
+        final var optAnswerSheet = answerSheetRepository.findById(examAticketId);
+        if (optAnswerSheet.isEmpty()) {
+            return assessResult;
+        }
+
+        final var answerSheet = optAnswerSheet.get();
+        assessResult.setRespCode("0000");
+        assessResult.setRespMessage("Success");
+        assessResult.setProductId(assessResultReq.getProductId());
+        assessResult.setAssessTime(answerSheet.getEndTime().toString());
+        assessResult.setAssessCode(assessCode);
+        assessResult.setAssessResultUrl(reportUrl);
+
+        return assessResult;
+    }
 }

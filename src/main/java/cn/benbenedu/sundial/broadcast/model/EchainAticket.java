@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @Document("echainAticket")
 public class EchainAticket {
@@ -14,4 +16,6 @@ public class EchainAticket {
     private EchainBrief echain;
 
     private String assessToken;
+
+    private List<List<String>> examTickets;
 }

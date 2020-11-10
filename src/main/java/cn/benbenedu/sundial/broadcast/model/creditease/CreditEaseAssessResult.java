@@ -8,7 +8,7 @@ public class CreditEaseAssessResult {
     private String respCode;
     private String respMessage;
 
-    private String productId;
+    private CreditEaseProductCode productId;
     private String assessTime;
     private String assessCode;
     private String assessResultUrl;

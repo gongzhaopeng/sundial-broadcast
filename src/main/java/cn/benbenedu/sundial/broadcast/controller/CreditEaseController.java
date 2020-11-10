@@ -4,6 +4,8 @@ import cn.benbenedu.sundial.broadcast.configuration.CreditEaseConfiguration;
 import cn.benbenedu.sundial.broadcast.exception.ErrorResponseException;
 import cn.benbenedu.sundial.broadcast.model.ErrorResponse;
 import cn.benbenedu.sundial.broadcast.model.ErrorResponseCode;
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResult;
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResultReq;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
 import cn.benbenedu.sundial.broadcast.service.CreditEaseService;
 import cn.benbenedu.sundial.broadcast.service.LoginService;
@@ -73,6 +75,13 @@ public class CreditEaseController {
         }
 
         return doLogin();
+    }
+
+    @PostMapping("/assess-result/acquiring")
+    public CreditEaseAssessResult acquireAssessResult(
+            @RequestBody @Valid CreditEaseAssessResultReq assessResultReq) {
+
+        return creditEaseService.getAssessResult(assessResultReq);
     }
 
     @PostMapping("/assess-code/signing")
