@@ -211,7 +211,7 @@ public class CreditEaseService implements InitializingBean {
         }
 
         final var echainAticket = optEchainAticket.get();
-        String examAticketId = null;
+        String examAticketId;
         if (echainAticket.getExamTickets() != null &&
                 !echainAticket.getExamTickets().isEmpty() && !echainAticket.getExamTickets().get(0).isEmpty()) {
             final var examAtickets = echainAticket.getExamTickets().get(0);
