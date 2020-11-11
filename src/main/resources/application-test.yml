@@ -5,3 +5,7 @@ mongodb:
     uri: 'mongodb://localhost:27017'
   account-center:
     uri: 'mongodb://localhost:27017'
+
+custom:
+  credit-ease:
+    assess-result-notify-url: "http://localhost:9000/broadcast/genesis/credit-ease/assess-result/receiver/mocking"

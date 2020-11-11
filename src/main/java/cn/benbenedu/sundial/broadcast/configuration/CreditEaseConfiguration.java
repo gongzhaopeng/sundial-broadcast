@@ -19,6 +19,7 @@ public class CreditEaseConfiguration {
     private String clientSecret;
     private String accountName;
     private String accountPassword;
+    private String assessResultNotifyUrl;
 
     @Data
     public static class Product {

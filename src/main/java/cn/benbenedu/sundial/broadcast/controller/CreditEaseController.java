@@ -5,12 +5,14 @@ import cn.benbenedu.sundial.broadcast.exception.ErrorResponseException;
 import cn.benbenedu.sundial.broadcast.model.ErrorResponse;
 import cn.benbenedu.sundial.broadcast.model.ErrorResponseCode;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResult;
+import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResultNotification;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseAssessResultReq;
 import cn.benbenedu.sundial.broadcast.model.creditease.CreditEaseProductCode;
 import cn.benbenedu.sundial.broadcast.service.CreditEaseService;
 import cn.benbenedu.sundial.broadcast.service.LoginService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/genesis/credit-ease")
+@Slf4j
 public class CreditEaseController {
 
     private final CreditEaseConfiguration creditEaseConfiguration;
@@ -92,6 +95,13 @@ public class CreditEaseController {
                 "assessCode", req.getAssessCode());
 
         return creditEaseService.sign(params, req.getTimestamp());
+    }
+
+    @PostMapping("/assess-result/receiver/mocking")
+    public void mockAssessResultReceiver(
+            @RequestBody @Valid CreditEaseAssessResultNotification notification) {
+
+        log.info("Credit-ease assess-result received: {}", notification);
     }
 
     private LoginResp doLogin() {

@@ -1,6 +1,7 @@
 package cn.benbenedu.sundial.broadcast.service;
 
 import cn.benbenedu.sundial.broadcast.configuration.CreditEaseConfiguration;
+import cn.benbenedu.sundial.broadcast.configuration.RestTemplateConfiguration;
 import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
 import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.function.Function;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CreditEaseService implements InitializingBean {
+
+    private final RestTemplate restTemplate;
 
     private final CreditEaseConfiguration creditEaseConfiguration;
 
@@ -40,6 +44,7 @@ public class CreditEaseService implements InitializingBean {
     private Account account;
 
     public CreditEaseService(
+            @RestTemplateConfiguration.Pure final RestTemplate restTemplate,
             final CreditEaseConfiguration creditEaseConfiguration,
             final AccountRepository accountRepository,
             final ExamRepository examRepository,
@@ -49,6 +54,7 @@ public class CreditEaseService implements InitializingBean {
             final AnswerSheetRepository answerSheetRepository,
             final ExamPersonalReportRepository examPersonalReportRepository) {
 
+        this.restTemplate = restTemplate;
         this.creditEaseConfiguration = creditEaseConfiguration;
         this.accountRepository = accountRepository;
         this.examRepository = examRepository;
@@ -176,7 +182,12 @@ public class CreditEaseService implements InitializingBean {
 
             log.info("CreditEase notification prepared: {}", notification);
 
-            // TODO
+            Optional.ofNullable(creditEaseConfiguration.getAssessResultNotifyUrl()).ifPresent(url ->
+                    restTemplate.postForEntity(
+                            creditEaseConfiguration.getAssessResultNotifyUrl(),
+                            notification,
+                            String.class
+                    ));
         });
     }
 
