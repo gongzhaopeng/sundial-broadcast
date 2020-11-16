@@ -83,23 +83,25 @@ public class CreditEaseService implements InitializingBean {
                     product.setNotifyPhase(productConfig.getNotifyPhase());
 
                     Optional.ofNullable(productConfig.getEchainTitle()).ifPresentOrElse(
-                            echainTitle -> {
-                                final var examChain =
-                                        examChainRepository.findByTitle(echainTitle).orElseThrow();
-                                product.setEchainId(examChain.getId());
-                                product.setEchainTitle(echainTitle);
-                                codeToProduct.put(code, product);
-                                examChain.getExams().forEach(examBrief ->
-                                        examIdToProduct.put(examBrief.getId(), product));
-                            },
-                            () -> {
-                                final var exam =
-                                        examRepository.findByTitle(productConfig.getExamTitle()).orElseThrow();
-                                product.setExamId(exam.getId());
-                                product.setExamTitle(exam.getTitle());
-                                codeToProduct.put(code, product);
-                                examIdToProduct.put(exam.getId(), product);
-                            }
+                            echainTitle -> examChainRepository.findByTitle(echainTitle).ifPresentOrElse(
+                                    examChain -> {
+                                        product.setEchainId(examChain.getId());
+                                        product.setEchainTitle(echainTitle);
+                                        codeToProduct.put(code, product);
+                                        examChain.getExams().forEach(examBrief ->
+                                                examIdToProduct.put(examBrief.getId(), product));
+                                    },
+                                    () -> log.warn("Exam-Chain:{} does not exist.", echainTitle)
+                            ),
+                            () -> examRepository.findByTitle(productConfig.getExamTitle()).ifPresentOrElse(
+                                    exam -> {
+                                        product.setExamId(exam.getId());
+                                        product.setExamTitle(exam.getTitle());
+                                        codeToProduct.put(code, product);
+                                        examIdToProduct.put(exam.getId(), product);
+                                    },
+                                    () -> log.warn("Exam:{} does not exist.", productConfig.getExamTitle())
+                            )
                     );
                 });
     }
