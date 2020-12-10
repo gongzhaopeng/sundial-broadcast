@@ -184,12 +184,14 @@ public class CreditEaseService implements InitializingBean {
 
             log.info("CreditEase notification prepared: {}", notification);
 
-            Optional.ofNullable(creditEaseConfiguration.getAssessResultNotifyUrl()).ifPresent(url ->
-                    restTemplate.postForEntity(
-                            creditEaseConfiguration.getAssessResultNotifyUrl(),
-                            notification,
-                            String.class
-                    ));
+            Optional.ofNullable(creditEaseConfiguration.getAssessResultNotifyUrl()).ifPresent(url -> {
+                final var resp = restTemplate.postForEntity(
+                        creditEaseConfiguration.getAssessResultNotifyUrl(),
+                        notification,
+                        String.class
+                );
+                log.info("CreditEase resp:{} to notification:{}", resp, notification);
+            });
         });
     }
 

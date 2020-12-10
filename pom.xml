@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>broadcast</artifactId>
-    <version>0.7</version>
+    <version>1.0</version>
     <name>broadcast</name>
     <description>Broadcast to external.</description>
 
