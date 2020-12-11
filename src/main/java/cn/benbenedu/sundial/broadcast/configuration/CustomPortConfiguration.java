@@ -11,7 +11,7 @@ import org.springframework.util.SocketUtils;
 @Slf4j
 public class CustomPortConfiguration implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
-    @Value("${port.number.min:0}")
+    @Value("${port.number.min:1}")
     private Integer minPort;
 
     @Value("${port.number.max:65535}")
