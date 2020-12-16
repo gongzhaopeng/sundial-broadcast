@@ -11,4 +11,6 @@ public class CreditEaseAssessResultNotification {
     private String assessResultUrl;
     private String token;
     private String timestamp;
+
+    private String orderCode;
 }

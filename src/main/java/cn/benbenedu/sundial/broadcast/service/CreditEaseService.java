@@ -5,6 +5,7 @@ import cn.benbenedu.sundial.broadcast.configuration.RestTemplateConfiguration;
 import cn.benbenedu.sundial.broadcast.event.model.PersonalReportGeneratedEvent;
 import cn.benbenedu.sundial.broadcast.model.Account;
 import cn.benbenedu.sundial.broadcast.model.AssessTokenTargetType;
+import cn.benbenedu.sundial.broadcast.model.EchainAticket;
 import cn.benbenedu.sundial.broadcast.model.ExamAticket;
 import cn.benbenedu.sundial.broadcast.model.creditease.*;
 import cn.benbenedu.sundial.broadcast.repository.accountcenter.AccountRepository;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CreditEaseService implements InitializingBean {
+
+    private static final String ORDER_CODE_FIELD_IN_EC_TICKET = "orderCode";
 
     private final RestTemplate restTemplate;
 
@@ -152,7 +155,8 @@ public class CreditEaseService implements InitializingBean {
 
         final var examId = examAticket.getExam().getId();
         Optional.ofNullable(examIdToProduct.get(examId)).ifPresent(product -> {
-            if (product.getCode() != CreditEaseProductCode.QSNHXSZ) {
+            if (product.getCode() != CreditEaseProductCode.QSNHXSZ &&
+                    product.getCode() != CreditEaseProductCode.SYSY) {
                 return;
             }
 
@@ -171,13 +175,15 @@ public class CreditEaseService implements InitializingBean {
             notification.setAssessCode(echainAticket.getAssessToken());
             notification.setAssessResultUrl(
                     personalReportGeneratedEvent.getUrls().values().stream().findFirst().get());
+            getOrderCode(echainAticket).ifPresent(notification::setOrderCode);
 
             final var timestamp = System.currentTimeMillis();
             final var params = Map.<String, Object>of(
                     "productId", notification.getProductId(),
                     "assessTime", notification.getAssessTime(),
                     "assessCode", notification.getAssessCode(),
-                    "assessResultUrl", notification.getAssessResultUrl());
+                    "assessResultUrl", notification.getAssessResultUrl(),
+                    ORDER_CODE_FIELD_IN_EC_TICKET, notification.getOrderCode());
             final var token = sign(params, timestamp);
             notification.setTimestamp(String.valueOf(timestamp));
             notification.setToken(token);
@@ -211,7 +217,8 @@ public class CreditEaseService implements InitializingBean {
             return assessResult;
         }
 
-        if (assessResultReq.getProductId() != CreditEaseProductCode.QSNHXSZ) {
+        if (assessResultReq.getProductId() != CreditEaseProductCode.QSNHXSZ &&
+                assessResultReq.getProductId() != CreditEaseProductCode.SYSY) {
             assessResult.setRespCode("0002");
             assessResult.setRespMessage("Invalid productId");
             return assessResult;
@@ -271,7 +278,14 @@ public class CreditEaseService implements InitializingBean {
         assessResult.setAssessTime(answerSheet.getEndTime().toString());
         assessResult.setAssessCode(assessCode);
         assessResult.setAssessResultUrl(reportUrl);
+        getOrderCode(echainAticket).ifPresent(assessResult::setOrderCode);
 
         return assessResult;
+    }
+
+    private Optional<String> getOrderCode(final EchainAticket echainAticket) {
+
+        return Optional.ofNullable(echainAticket.getExtInfo()).map(
+                extInfo -> extInfo.get(ORDER_CODE_FIELD_IN_EC_TICKET));
     }
 }

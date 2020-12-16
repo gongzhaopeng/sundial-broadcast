@@ -12,4 +12,6 @@ public class CreditEaseAssessResult {
     private String assessTime;
     private String assessCode;
     private String assessResultUrl;
+
+    private String orderCode;
 }

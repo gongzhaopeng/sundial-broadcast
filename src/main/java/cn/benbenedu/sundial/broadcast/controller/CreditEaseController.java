@@ -45,9 +45,12 @@ public class CreditEaseController {
     public LoginResp login(
             @RequestBody @Valid LoginReq loginReq) {
 
+        log.info("path:{}, req:{}", "/login", loginReq);
+
         final var params = Map.<String, Object>of(
                 "productId", loginReq.getProductId(),
-                "assessCode", loginReq.getAssessCode());
+                "assessCode", loginReq.getAssessCode(),
+                "orderCode", loginReq.getOrderCode());
 
         if (!creditEaseService.verifySign(params, loginReq.getTimestamp(), loginReq.getToken())) {
             final var errorResponse =
@@ -84,6 +87,8 @@ public class CreditEaseController {
     public CreditEaseAssessResult acquireAssessResult(
             @RequestBody @Valid CreditEaseAssessResultReq assessResultReq) {
 
+        log.info("path:{}, req:{}", "/assess-result/acquiring", assessResultReq);
+
         return creditEaseService.getAssessResult(assessResultReq);
     }
 
@@ -92,7 +97,8 @@ public class CreditEaseController {
 
         final var params = Map.<String, Object>of(
                 "productId", req.getProductId(),
-                "assessCode", req.getAssessCode());
+                "assessCode", req.getAssessCode(),
+                "orderCode", req.getOrderCode());
 
         return creditEaseService.sign(params, req.getTimestamp());
     }
@@ -130,6 +136,8 @@ public class CreditEaseController {
 
         @NotNull
         private Long timestamp;
+
+        private String orderCode;
     }
 
     @Data
@@ -161,5 +169,7 @@ public class CreditEaseController {
 
         @NotNull
         private Long timestamp;
+
+        private String orderCode;
     }
 }
