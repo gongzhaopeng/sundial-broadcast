@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerF
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.SocketUtils;
 
-@Configuration
+//@Configuration
 @Slf4j
 public class CustomPortConfiguration implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
