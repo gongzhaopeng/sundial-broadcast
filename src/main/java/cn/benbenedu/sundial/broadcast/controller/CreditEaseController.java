@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/genesis/credit-ease")
@@ -47,10 +47,10 @@ public class CreditEaseController {
 
         log.info("path:{}, req:{}", "/login", loginReq);
 
-        final var params = Map.<String, Object>of(
-                "productId", loginReq.getProductId(),
-                "assessCode", loginReq.getAssessCode(),
-                "orderCode", loginReq.getOrderCode());
+        final var params = new HashMap<String, Object>();
+        params.put("productId", loginReq.getProductId());
+        params.put("assessCode", loginReq.getAssessCode());
+        params.put("orderCode", loginReq.getOrderCode());
 
         if (!creditEaseService.verifySign(params, loginReq.getTimestamp(), loginReq.getToken())) {
             final var errorResponse =
@@ -95,10 +95,10 @@ public class CreditEaseController {
     @PostMapping("/assess-code/signing")
     public String signAssessCode(@RequestBody @Valid AssessCodeSigningReq req) {
 
-        final var params = Map.<String, Object>of(
-                "productId", req.getProductId(),
-                "assessCode", req.getAssessCode(),
-                "orderCode", req.getOrderCode());
+        final var params = new HashMap<String, Object>();
+        params.put("productId", req.getProductId());
+        params.put("assessCode", req.getAssessCode());
+        params.put("orderCode", req.getOrderCode());
 
         return creditEaseService.sign(params, req.getTimestamp());
     }

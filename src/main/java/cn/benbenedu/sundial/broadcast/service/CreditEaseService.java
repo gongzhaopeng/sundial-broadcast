@@ -178,12 +178,13 @@ public class CreditEaseService implements InitializingBean {
             getOrderCode(echainAticket).ifPresent(notification::setOrderCode);
 
             final var timestamp = System.currentTimeMillis();
-            final var params = Map.<String, Object>of(
-                    "productId", notification.getProductId(),
-                    "assessTime", notification.getAssessTime(),
-                    "assessCode", notification.getAssessCode(),
-                    "assessResultUrl", notification.getAssessResultUrl(),
-                    ORDER_CODE_FIELD_IN_EC_TICKET, notification.getOrderCode());
+            final var params = new HashMap<String, Object>();
+            params.put("productId", notification.getProductId());
+            params.put("assessTime", notification.getAssessTime());
+            params.put("assessCode", notification.getAssessCode());
+            params.put("assessResultUrl", notification.getAssessResultUrl());
+            params.put(ORDER_CODE_FIELD_IN_EC_TICKET, notification.getOrderCode());
+
             final var token = sign(params, timestamp);
             notification.setTimestamp(String.valueOf(timestamp));
             notification.setToken(token);
@@ -208,9 +209,9 @@ public class CreditEaseService implements InitializingBean {
         assessResult.setRespCode("0003");
         assessResult.setRespMessage("No result");
 
-        final var params = Map.<String, Object>of(
-                "productId", assessResultReq.getProductId(),
-                "assessCode", assessResultReq.getAssessCode());
+        final var params = new HashMap<String, Object>();
+        params.put("productId", assessResultReq.getProductId());
+        params.put("assessCode", assessResultReq.getAssessCode());
         if (!verifySign(params, Long.parseLong(assessResultReq.getTimestamp()), assessResultReq.getToken())) {
             assessResult.setRespCode("0001");
             assessResult.setRespMessage("Invalid token");
