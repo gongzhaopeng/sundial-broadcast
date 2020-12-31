@@ -18,6 +18,8 @@ public class EchainAticket {
 
     private String assessToken;
 
+    private String owner;
+
     private List<List<String>> examTickets;
 
     private Map<String, String> extInfo;

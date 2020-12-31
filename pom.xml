@@ -8,8 +8,8 @@
         <version>0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>broadcast</artifactId>
-    <version>2.3</version>
+    <artifactId>erdaoqu</artifactId>
+    <version>0.1</version>
     <name>broadcast</name>
     <description>Broadcast to external.</description>
 

@@ -8,10 +8,10 @@ spring:
 #          destination: answerSheetFinished
 #          content-type: application/json
 #          group: broadcastGroup
-        inboundPersonalReportGenerated:
-          destination: personalReportGenerated
-          content-type: application/json
-          group: broadcastGroup
+#        inboundPersonalReportGenerated:
+#          destination: personalReportGenerated
+#          content-type: application/json
+#          group: broadcastGroup
       kafka:
         binder:
           configuration:
