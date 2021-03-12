@@ -63,3 +63,8 @@ custom:
     client-secret: 'cRF6Lvp5Tk7g6hl3VCeXYN8YvHWZ9dk67Oz25ygIFg1umJP1b2nI2ZMvCWHXA6h9'
     account-name: 'dev.frontend.it@benbenedu.cn'
     account-password: 'dev.frontend.it@benbenedu.cn'
+  baiding-school:
+    client-id: '5f6b12669d337636ebc0ad05'
+    client-secret: 'cRF6Lvp5Tk7g6hl3VCeXYN8YvHWZ9dk67Oz25ygIFg1umJP1b2nI2ZMvCWHXA6h9'
+    account-name: 'dev.frontend.it@benbenedu.cn'
+    account-password: 'dev.frontend.it@benbenedu.cn'
