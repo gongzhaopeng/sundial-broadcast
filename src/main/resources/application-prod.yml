@@ -14,3 +14,8 @@ custom:
     account-name: 'production.creditease@creditease.com'
     account-password: 'qSyPVNzl80BsKxoCR3XYZbMLt9j71Efr'
     assess-result-notify-url: "https://www.cejifenshangcheng.com/V2020api/integralmall/mallOrder/receiveAssessResult"
+  baiding-school:
+    client-id: '604acb33ec19891262e0656a'
+    client-secret: 'iDPzXrFpHCQznDSoMrPdozljqZPlRdgKhyweDLMeIZinDdcvGqMvdHheIrIf2qu3'
+    account-name: 'production.baidingschool@baidingschool.com'
+    account-password: 'JavXTh46t01Z5g9zPuqr8VydsC2kKIxY'

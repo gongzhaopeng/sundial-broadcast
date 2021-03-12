@@ -13,3 +13,8 @@ custom:
     client-secret: 'k4aKjkS6qRLixOZQFK4kv4bUHTi6tlrt5iDtGL5Mv5gUQELunwMq7blJXl9bucH9'
     account-name: 'integrating.creditease@creditease.com'
     account-password: 'MDcIea5CnFGKBHwJtjOTNAiobkRg1xX6'
+  baiding-school:
+    client-id: '604acdbad597407771cc8918'
+    client-secret: 'Q1rhtWBRsAovQBV3QaTSH8CF3btBJQ4vg7XxgV3zErMUxbI6RmVdPwoUXQsJog7k'
+    account-name: 'integrating.baidingschool@baidingschool.com'
+    account-password: 'OGtagFSmJU5ENBP8KQ4WZw0Ihc29CxH3'
