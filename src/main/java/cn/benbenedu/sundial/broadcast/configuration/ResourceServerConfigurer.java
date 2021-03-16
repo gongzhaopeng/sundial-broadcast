@@ -66,7 +66,8 @@ public class ResourceServerConfigurer
                 "/csrf/**").permitAll();
 
         http.authorizeRequests()
-                .antMatchers("/genesis/credit-ease/**").permitAll();
+                .antMatchers("/genesis/credit-ease/**").permitAll()
+                .antMatchers("/genesis/baiding-school/**").permitAll();
 
         http.authorizeRequests()
                 .anyRequest().authenticated();
